@@ -14,6 +14,21 @@ differences:
 * Updated *.gitignore* with `openapi.json` and `openapi.yaml`
 * Added the `quarkus-openshift` extension
 
+## Building Docker Image
+(Re)Create the JAR file for the project to convert it into a distributable format
+```bash
+mvn package
+
+```
+Build the image (make sure to change quay.io ORG as needed)
+```bash
+docker build -f src/main/docker/Dockerfile.jvm -t quay.io/{ORG}/rhoam-quarkus-openapi:latest .
+```
+The image can be pushed to quay.io or run locally if needed using `docker run`
+```bash
+docker run -i --rm -p 8080:8080 quay.io/{ORG}/rhoam-quarkus-openapi:latest
+```
+
 ## Usage
 
 Verify that your system meets the following requirements:
