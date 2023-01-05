@@ -14,19 +14,21 @@ differences:
 * Updated *.gitignore* with `openapi.json` and `openapi.yaml`
 * Added the `quarkus-openshift` extension
 
-## Usage
+## Prerequisites
 
 Verify that your system meets the following requirements:
 
-* JDK 8 or 11+
-* Gradle or Apache Maven 3.6.2+
+* JDK 11+
+* Gradle or Apache Maven 3.8.5+
+
+## Usage
 
 ### Dev Mode
 
 Exposes the application on `http://localhost:8080` and enables live reload.
 
 ```bash
-./mvn quarkus:dev
+mvn quarkus:dev
 ```
 
 ### Deploy to OpenShift
@@ -34,7 +36,7 @@ Exposes the application on `http://localhost:8080` and enables live reload.
 *NOTE: This requires the OpenShift (`oc`) Command-Line tool to be installed on your system, and that you have a valid cluster login.*
 
 ```bash
-./mvnw clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.expose=true
+mvn clean package -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.expose=true
 ```
 
 ### Import to 3scale API Management
@@ -50,9 +52,16 @@ oc label svc/rhoam-openapi discovery.3scale.net="true"
 
 Now you can import the Service using 3scale Service Discovery.
 
-### Build an Image
-
+## Building Docker Image
+(Re)Create the JAR file for the project to convert it into a distributable format
+```bash
+mvn package
 ```
-./mvnw clean package
-docker build . -f src/docker/Dockerfile.jvm -t quay.io/evanshortiss/rhoam-quarkus-openapi:latest
+Build the image (make sure to change quay.io ORG as needed)
+```bash
+docker build -f src/main/docker/Dockerfile.jvm -t quay.io/${ORG}/rhoam-quarkus-openapi:latest .
+```
+The image can be pushed to quay.io or run locally if needed using `docker run`
+```bash
+docker run -i --rm -p 8080:8080 quay.io/${ORG}/rhoam-quarkus-openapi:latest
 ```
